@@ -1,0 +1,9 @@
+[package]
+name = "disonante_generator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+midly = "0.5.1"
+rand = "0.8.5"
+clap = { version = "4.5.4", features = ["derive"] }
