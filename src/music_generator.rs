@@ -78,3 +78,58 @@ pub fn generate_markov_notes(seed_pitches: &[u8], count: u32) -> Vec<Note> {
 
     notes
 }
+
+//pruebas unitarias
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_generate_random_notes_count() {
+        let count = 10;
+        let notes = generate_random_notes(count);
+        assert_eq!(notes.len() as u32, count);
+    }
+
+    #[test]
+    fn test_generate_random_notes_duration_range() {
+        let notes = generate_random_notes(1);
+        let note = notes.first().unwrap();
+        assert!(note.duration >= 100 && note.duration <= 500);
+    }
+    
+ #[test]
+ fn test_markov_chain_new_from_notes() {
+     let seed_pitches = vec![60, 62, 64, 62, 60, 60];
+     let chain = MarkovChain::new_from_notes(&seed_pitches);
+     
+     // Verifica las transiciones para la nota 60
+     let transitions_60 = chain.transitions.get(&60).unwrap();
+     assert_eq!(transitions_60, &[62, 60]);
+
+     // Verifica las transiciones para la nota 62
+     let transitions_62 = chain.transitions.get(&62).unwrap();
+     assert_eq!(transitions_62, &[64, 60]);
+     
+     // Verifica las transiciones para la nota 64
+     let transitions_64 = chain.transitions.get(&64).unwrap();
+     assert_eq!(transitions_64, &[62]);
+ }
+
+    #[test]
+    fn test_markov_chain_next_note_from_known_transition() {
+        let seed_pitches = vec![60, 62, 64];
+        let chain = MarkovChain::new_from_notes(&seed_pitches);
+        let next_note = chain.next_note(60);
+        assert_eq!(next_note, 62);
+    }
+
+    #[test]
+    fn test_generate_markov_notes_count() {
+        let seed_pitches = vec![60, 61, 62];
+        let count = 5;
+        let notes = generate_markov_notes(&seed_pitches, count);
+        assert_eq!(notes.len() as u32, count);
+    }
+}
